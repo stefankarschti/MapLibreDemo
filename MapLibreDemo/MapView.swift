@@ -27,6 +27,7 @@ struct MapView: UIViewRepresentable {
     var mapView = MGLMapView(frame: .zero, styleURL: MGLStyle.defaultStyleURL())
     let locationManager = CLLocationManager()
     let locationDelegate = LocationDelegate()
+    let boundingBox = MGLCoordinateBounds(sw: CLLocationCoordinate2D(latitude: 46.71620366032939, longitude: 23.39774008738669), ne: CLLocationCoordinate2D(latitude: 46.83472377112443, longitude: 23.74945969396266))
     
     func makeUIView(context: Context) -> MGLMapView {
         // read the key from property list
@@ -41,12 +42,11 @@ struct MapView: UIViewRepresentable {
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.logoView.isHidden = true
         mapView.showsUserLocation = true
-        mapView.setZoomLevel(0, animated: false)
-        
-        // use the coordinator only if you need
-        // to respond to the map events
+        mapView.minimumZoomLevel = 13
+        mapView.showsScale = true
+        mapView.showsHeading = true
+        mapView.setVisibleCoordinateBounds(boundingBox, animated: false)
         mapView.delegate = context.coordinator
-        
         // location stuff
         locationManager.delegate = context.coordinator
         locationManager.requestWhenInUseAuthorization()
@@ -57,8 +57,7 @@ struct MapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: MGLMapView, context: Context) {
         guard let location = self.userLocation else { return }
-        let z = max(mapView.zoomLevel, 14)
-        mapView.setCenter(location, zoomLevel: z, animated: true)
+        mapView.setCenter(location, animated: true)
     }
     
     func makeCoordinator() -> MapView.Coordinator {
@@ -75,6 +74,15 @@ struct MapView: UIViewRepresentable {
         func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
             // write your custom code which will be executed
             // after map has been loaded
+        }
+        
+        func mapView(_ mapView: MGLMapView, shouldChangeFrom oldCamera: MGLMapCamera, to newCamera: MGLMapCamera) -> Bool {
+            // Check if the new camera center is within the bounding box
+            func contains(bbox: MGLCoordinateBounds, point: CLLocationCoordinate2D)-> Bool {
+                return point.latitude >= bbox.sw.latitude && point.latitude <= bbox.ne.latitude && point.longitude >= bbox.sw.longitude && point.longitude <= bbox.ne.longitude
+            }
+
+            return contains(bbox: control.boundingBox, point: newCamera.centerCoordinate)
         }
         
         func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
