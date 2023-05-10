@@ -14,12 +14,14 @@ struct Style {
 
 let styleList: [Style]  = [
     Style(name: "Streets Style", url: "https://api.maptiler.com/maps/streets-v2/style.json?key="),
+    Style(name: "My Streets Style", url: "https://api.maptiler.com/maps/46b24e19-6503-4b2a-81a4-ea6d8431fc92/style.json?key="),
     Style(name: "Satellite Style", url: "https://api.maptiler.com/maps/hybrid/style.json?key="),
     Style(name: "Basic Style", url: "https://api.maptiler.com/maps/basic-v2/style.json?key="),
     Style(name: "Dark Style", url: "https://api.maptiler.com/maps/dataviz-dark/style.json?key="),
     Style(name: "Light Style", url: "https://api.maptiler.com/maps/dataviz-light/style.json?key="),
     Style(name: "Outdoor Style", url: "https://api.maptiler.com/maps/outdoor-v2/style.json?key="),
     Style(name: "Winter Style", url: "https://api.maptiler.com/maps/winter-v2/style.json?key="),
+    Style(name: "Ocean Style", url: "https://api.maptiler.com/maps/ocean/style.json?key="),
 ]
 
 struct ContentView: View {
