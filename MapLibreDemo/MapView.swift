@@ -23,22 +23,33 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 }
 
 struct MapView: UIViewRepresentable {
+    @Binding var bind_styleURL: String
     @State private var userLocation: CLLocationCoordinate2D?
     var mapView = MGLMapView(frame: .zero, styleURL: MGLStyle.defaultStyleURL())
     let locationManager = CLLocationManager()
     let locationDelegate = LocationDelegate()
     let boundingBox = MGLCoordinateBounds(sw: CLLocationCoordinate2D(latitude: 46.71620366032939, longitude: 23.39774008738669), ne: CLLocationCoordinate2D(latitude: 46.83472377112443, longitude: 23.74945969396266))
     
-    func makeUIView(context: Context) -> MGLMapView {
+    func updateStyle(_ uiView: MGLMapView) {
         // read the key from property list
         let mapTilerKey = getMapTilerkey()
         validateKey(mapTilerKey)
         
         // Build the style url
-        let styleURL = URL(string: "https://api.maptiler.com/maps/streets/style.json?key=\(mapTilerKey)")
-        
+        var style = bind_styleURL
+        if style.isEmpty {
+            style = "https://api.maptiler.com/maps/streets/style.json?key="
+        }
+        let styleURL = URL(string: style + "\(mapTilerKey)")
+        if let unwrapped = styleURL {
+            print("Style URL: \(unwrapped)")
+        }
         // create the mapview
-        mapView.styleURL = styleURL;
+        uiView.styleURL = styleURL;
+    }
+    func makeUIView(context: Context) -> MGLMapView {
+        // create the mapview
+        updateStyle(mapView)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.logoView.isHidden = true
         mapView.showsUserLocation = true
@@ -56,6 +67,10 @@ struct MapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: MGLMapView, context: Context) {
+        // style update
+        updateStyle(uiView)
+        
+        // location update
         guard let location = self.userLocation else { return }
         mapView.setCenter(location, animated: true)
     }
@@ -113,7 +128,8 @@ struct MapView: UIViewRepresentable {
 }
 
 struct MapView_Previews: PreviewProvider {
+    @State static var styleURL: String = ""
     static var previews: some View {
-        MapView()
+        MapView(bind_styleURL: $styleURL)
     }
 }
