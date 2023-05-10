@@ -63,6 +63,13 @@ struct MapView: UIViewRepresentable {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
 
+        // annotations
+        // Create point to represent where the symbol should be placed
+        let point = MGLPointAnnotation()
+        point.coordinate = CLLocationCoordinate2D(latitude: 46.76952032174447, longitude: 23.589856130996207)
+        point.title = "Statue"
+        mapView.addAnnotation(point)
+        
         return mapView
     }
     
@@ -107,6 +114,12 @@ struct MapView: UIViewRepresentable {
 
         func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
             print("Location update failed with error: \(error.localizedDescription)")
+        }
+        
+        func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage? {
+            let image = UIImage(named: "myImage")!
+            let annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: "myImage")
+            return annotationImage
         }
     }
     
