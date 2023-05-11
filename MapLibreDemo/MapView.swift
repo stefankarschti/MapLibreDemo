@@ -65,11 +65,18 @@ struct MapView: UIViewRepresentable {
 
         // annotations
         // Create point to represent where the symbol should be placed
-        let point = MGLPointAnnotation()
-        point.coordinate = CLLocationCoordinate2D(latitude: 46.76952032174447, longitude: 23.589856130996207)
-        point.title = "Statue"
-        mapView.addAnnotation(point)
+        let point1 = MGLPointAnnotation()
+        point1.coordinate = CLLocationCoordinate2D(latitude: 46.76952032174447, longitude: 23.589856130996207)
+        point1.title = "Statue1"
+        mapView.addAnnotation(point1)
         
+        // 46.751701289159485, 23.5981339859047
+        let point2 = MGLPointAnnotation()
+        point2.coordinate = CLLocationCoordinate2D(latitude: 46.751701289159485, longitude: 23.5981339859047)
+        point2.title = "Statue2"
+        mapView.addAnnotation(point2)
+        
+
         return mapView
     }
     
