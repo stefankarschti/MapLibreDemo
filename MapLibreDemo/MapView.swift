@@ -25,7 +25,6 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 struct MapView: UIViewRepresentable {
     @Binding var bind_styleURL: String
     @State private var userLocation: CLLocationCoordinate2D?
-    var mapView = MGLMapView(frame: .zero, styleURL: MGLStyle.defaultStyleURL())
     let locationManager = CLLocationManager()
     let locationDelegate = LocationDelegate()
     let boundingBox = MGLCoordinateBounds(sw: CLLocationCoordinate2D(latitude: 46.71620366032939, longitude: 23.39774008738669), ne: CLLocationCoordinate2D(latitude: 46.83472377112443, longitude: 23.74945969396266))
@@ -49,10 +48,12 @@ struct MapView: UIViewRepresentable {
     }
     func makeUIView(context: Context) -> MGLMapView {
         // create the mapview
+        let mapView = MGLMapView(frame: .zero, styleURL: MGLStyle.defaultStyleURL())
         updateStyle(mapView)
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.logoView.isHidden = true
         mapView.showsUserLocation = true
+        mapView.showsUserHeadingIndicator = true
         mapView.minimumZoomLevel = 13
         mapView.showsScale = true
         mapView.showsHeading = true
@@ -76,6 +77,24 @@ struct MapView: UIViewRepresentable {
         point2.title = "Statue2"
         mapView.addAnnotation(point2)
         
+        // route
+        // Simulated route coordinates
+        // 46.738353192398165, 23.591225526255162
+        // 46.74183919270858, 23.591803144589015
+        // 46.74663240854748, 23.59272754575663
+        // 46.74944497193167, 23.593883518803718
+        // 46.752534829576085, 23.595444307024266
+        let routeCoordinates = [
+            CLLocationCoordinate2D(latitude: 46.738353192398165, longitude: 23.591225526255162),
+            CLLocationCoordinate2D(latitude: 46.74183919270858, longitude: 23.591803144589015),
+            CLLocationCoordinate2D(latitude: 46.74663240854748, longitude: 23.59272754575663),
+            CLLocationCoordinate2D(latitude: 46.74944497193167, longitude: 23.593883518803718),
+            CLLocationCoordinate2D(latitude: 46.752534829576085, longitude: 23.595444307024266),
+        ]
+
+        // Create a polyline overlay for the route
+        let polyline = MGLPolyline(coordinates: routeCoordinates, count: UInt(routeCoordinates.count))
+        mapView.addAnnotation(polyline)
 
         return mapView
     }
@@ -86,7 +105,7 @@ struct MapView: UIViewRepresentable {
         
         // location update
         guard let location = self.userLocation else { return }
-        mapView.setCenter(location, animated: true)
+        uiView.setCenter(location, animated: true)
     }
     
     func makeCoordinator() -> MapView.Coordinator {
