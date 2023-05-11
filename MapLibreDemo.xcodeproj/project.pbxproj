@@ -47,6 +47,8 @@
 		F85D61032A0A5FDF00773860 /* MapLibreDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLibreDemoUITests.swift; sourceTree = "<group>"; };
 		F85D61052A0A5FDF00773860 /* MapLibreDemoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLibreDemoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F85D61152A0A62FE00773860 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		F8CBD10B2A0D1AEB006C5888 /* insert_access_token.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = insert_access_token.sh; sourceTree = SOURCE_ROOT; };
+		F8CBD1112A0D2438006C5888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 		F85D60DC2A0A5FDE00773860 = {
 			isa = PBXGroup;
 			children = (
+				F8CBD10B2A0D1AEB006C5888 /* insert_access_token.sh */,
 				F85D60E72A0A5FDE00773860 /* MapLibreDemo */,
 				F85D60F82A0A5FDF00773860 /* MapLibreDemoTests */,
 				F85D61022A0A5FDF00773860 /* MapLibreDemoUITests */,
@@ -103,6 +106,7 @@
 				F85D60EC2A0A5FDF00773860 /* Assets.xcassets */,
 				F85D60EE2A0A5FDF00773860 /* Preview Content */,
 				F85D61152A0A62FE00773860 /* MapView.swift */,
+				F8CBD1112A0D2438006C5888 /* Info.plist */,
 			);
 			path = MapLibreDemo;
 			sourceTree = "<group>";
@@ -142,6 +146,7 @@
 				F85D60E12A0A5FDE00773860 /* Sources */,
 				F85D60E22A0A5FDE00773860 /* Frameworks */,
 				F85D60E32A0A5FDE00773860 /* Resources */,
+				F8CBD10A2A0D1A80006C5888 /* Insert API Key */,
 			);
 			buildRules = (
 			);
@@ -262,6 +267,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F8CBD10A2A0D1A80006C5888 /* Insert API Key */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Insert API Key";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"INFO.PLIST path $TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n$SRCROOT/insert_access_token.sh\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F85D60E12A0A5FDE00773860 /* Sources */ = {
