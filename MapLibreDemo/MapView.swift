@@ -24,9 +24,6 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 
 struct MapView: UIViewRepresentable {
     @Binding var bind_styleURL: String
-    @State private var userLocation: CLLocationCoordinate2D?
-    let locationManager = CLLocationManager()
-    let locationDelegate = LocationDelegate()
     let boundingBox = MGLCoordinateBounds(sw: CLLocationCoordinate2D(latitude: 46.71620366032939, longitude: 23.39774008738669), ne: CLLocationCoordinate2D(latitude: 46.83472377112443, longitude: 23.74945969396266))
     
     func updateStyle(_ uiView: MGLMapView) {
@@ -59,10 +56,7 @@ struct MapView: UIViewRepresentable {
         mapView.showsHeading = true
         mapView.setVisibleCoordinateBounds(boundingBox, animated: false)
         mapView.delegate = context.coordinator
-        // location stuff
-        locationManager.delegate = context.coordinator
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
+        mapView.userTrackingMode = .followWithHeading
 
         // annotations
         // Create point to represent where the symbol should be placed
@@ -79,11 +73,6 @@ struct MapView: UIViewRepresentable {
         
         // route
         // Simulated route coordinates
-        // 46.738353192398165, 23.591225526255162
-        // 46.74183919270858, 23.591803144589015
-        // 46.74663240854748, 23.59272754575663
-        // 46.74944497193167, 23.593883518803718
-        // 46.752534829576085, 23.595444307024266
         let routeCoordinates = [
             CLLocationCoordinate2D(latitude: 46.738353192398165, longitude: 23.591225526255162),
             CLLocationCoordinate2D(latitude: 46.74183919270858, longitude: 23.591803144589015),
@@ -102,17 +91,13 @@ struct MapView: UIViewRepresentable {
     func updateUIView(_ uiView: MGLMapView, context: Context) {
         // style update
         updateStyle(uiView)
-        
-        // location update
-        guard let location = self.userLocation else { return }
-        uiView.setCenter(location, animated: true)
     }
     
     func makeCoordinator() -> MapView.Coordinator {
         Coordinator(self)
     }
     
-    final class Coordinator: NSObject, MGLMapViewDelegate, CLLocationManagerDelegate {
+    final class Coordinator: NSObject, MGLMapViewDelegate {
         var control: MapView
         
         init(_ control: MapView) {
@@ -131,15 +116,6 @@ struct MapView: UIViewRepresentable {
             }
 
             return contains(bbox: control.boundingBox, point: newCamera.centerCoordinate)
-        }
-        
-        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            guard let location = locations.last?.coordinate else { return }
-            control.userLocation = location
-        }
-
-        func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-            print("Location update failed with error: \(error.localizedDescription)")
         }
         
         func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage? {
